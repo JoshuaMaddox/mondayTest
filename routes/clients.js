@@ -1,37 +1,49 @@
 const express = require('express')
 const router = express.Router()
 
-const User = require('../models/User')
+const Client = require('../models/Client')
 
 router.route('/')
   .get((req, res) => {
-    User.findFemale()
-      .skip(10)
-      .limit(10)
-      .then(users => { res.send(users) })
+    Client.find(req.query)
+      .then(clients => { res.send(clients) })
       .catch(err => { res.status(400).send(err) })
   })
   .post((req, res) => {
-    User.create(req.body)
-      .then(user => { res.send(user) })
+    Client.create(req.body)
+      .then(client => { res.send(client) })
       .catch(err => { res.status(400).send(err) })
   })
 
-  router.route('/:id')
-    .put((req, res) => {
-      User.findById(req.params.id)
-      .then(user => {
-        user.haveBirthday((err, savedUser) => {
 
-        })
-      })
-      .then(user => {
-        res.send(user)
+  router.route('/:id')
+    .get((req,res) => {
+      Client.findById(req.params.id)
+        .then(client => res.send(client))
+        .catch(err => res.status(400).send(err))
+    })
+    .put((req, res) => {
+      Client.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true})
+      .then(client => {
+        res.send(client)
       })
       .catch(err => {
         res.status(400).send(err)
       })
     })
+    .delete((req, res) => {
+      Client.findByIdAndRemove(req.params.id)
+      .then(client => client.save())
+      .then(clients => {
+        Client.find()
+          .then(clients => res.send(clients))
+      })
+      .catch(err => {
+        res.status(400).send(err)
+      })
+    })
+
+module.exports = router
 
 // router.route('/:id')
 // .put((req, res) => {
@@ -45,7 +57,14 @@ router.route('/')
 //   })
 // })
 
-module.exports = router
+ // .get((req, res) => {
+ //    Client.find()
+ //      .skip(10)
+ //      .limit(10)
+ //      .then(clients => { res.send(clients) })
+ //      .catch(err => { res.status(400).send(err) })
+ //  })
+
 
 // .limit(20)
 // .sort({age: 1})

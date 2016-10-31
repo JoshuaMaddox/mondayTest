@@ -1,5 +1,5 @@
 // LOAD ENV VARIABLES
-require('dotenv').config({ silent: true })
+// require('dotenv').config({ silent: true })
 
 // SET SERVER PORT
 const PORT = process.env.PORT || 8000
