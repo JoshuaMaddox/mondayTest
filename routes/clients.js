@@ -1,11 +1,26 @@
 const express = require('express')
 const router = express.Router()
+const moment = require('moment')
 
 const Client = require('../models/Client')
 
 router.route('/')
   .get((req, res) => {
-    Client.find(req.query)
+    var queryGender = null
+    var searchAlergy = null
+    if(req.query.gender) {
+      queryGender = { gender: req.query.gender }
+    }
+    if(req.query.alergy) {
+      searchAlergy = 'allergies'
+      var arrayToFind = req.query.alergy
+      console.log('searchAlergy: ', searchAlergy)
+    }
+    Client.find()
+      .limit(parseInt(req.query.pagesize))
+      .where(queryGender)
+      .where('age').gt(req.query.minage || 0).lt(req.query.maxage || 120)
+      .where('lastVisit').gt(req.query.lastVisit || Date.now())
       .then(clients => { res.send(clients) })
       .catch(err => { res.status(400).send(err) })
   })

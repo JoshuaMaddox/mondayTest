@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const moment = require('moment')
 let Client;
 
 const clientSchema = new mongoose.Schema({
@@ -9,7 +10,7 @@ const clientSchema = new mongoose.Schema({
   age: {type: Number, min: 0, max: 120},
   allergies: [String],
   gender: {type: String, enum: ['male', 'female']},
-  lastVist:{type: Date}
+  lastVisit:{type: Date, max: Date.now()}
 })
 
 //with in the statics and methods are great places to make api calls
